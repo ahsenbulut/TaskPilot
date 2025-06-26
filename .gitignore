@@ -1,0 +1,16 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Env
+.env
+
+# Dist
+dist/
+
+# IDE / OS
+.vscode/
+.DS_Store
