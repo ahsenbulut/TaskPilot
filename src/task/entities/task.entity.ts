@@ -1,20 +1,38 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { User } from '../../user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
 
 @Entity('tasks')
 export class Task {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
-  title!: string;
+  title: string;
 
-  @Column({ default: 'todo' })
-  status!: 'todo' | 'in-progress' | 'done';
+  @Column()
+  status: string;
+
+  @ManyToOne(() => Project, (project) => project.tasks)
+  @JoinColumn({ name: 'project_id' })
+  project: Project;
+
+  @ManyToOne(() => User, user => user.tasks, { eager: true })
+  @JoinColumn({ name: 'assigned_user_id' })
+  assignedUser: User;
+
+  @Column({ type: 'timestamp', nullable: true })
+  startDate: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  endDate: Date;
 
   @Column({ nullable: true })
-  description?: string;
-
-  @ManyToOne(() => Project, (project) => project.id)
-  project!: Project;
+  priority: string;
 }

@@ -4,6 +4,7 @@ import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
 import { Project } from './project/entities/project.entity';
 import { Task } from './task/entities/task.entity';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,11 +15,12 @@ import { Task } from './task/entities/task.entity';
       username: 'ahsen',
       password: 'secret',
       database: 'taskpilot_db',
-      entities: [Project, Task],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     ProjectModule,
     TaskModule,
+    UserModule
   ],
 })
 export class AppModule {}
