@@ -8,7 +8,8 @@ import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   ADMIN = 'admin',
-  MEMBER = 'member',
+  MANAGER = 'manager',
+  GUEST = 'guest',
 }
 
 @Entity('users')
@@ -29,7 +30,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.MEMBER,
+    default: UserRole.GUEST, // 👈 Varsayılan olarak guest
   })
   role: UserRole;
 

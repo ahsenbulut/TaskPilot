@@ -23,7 +23,7 @@ export class AuthService {
     if (existing) {
       throw new ConflictException('Email already in use');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+
     const hashed: string = await bcrypt.hash(data.password, 10);
     const userCount = await this.userService.countUsers();
 
@@ -31,21 +31,22 @@ export class AuthService {
       email: data.email,
       name: data.name,
       password: hashed,
-      role: userCount === 0 ? UserRole.ADMIN : UserRole.MEMBER,
+      role: userCount === 0 ? UserRole.ADMIN : UserRole.GUEST, // 👈 updated
     });
 
     return instanceToPlain(newUser);
   }
 
-  async login(data: LoginDto): Promise<{ access_token: string }> {
+  async login(data: LoginDto): Promise<{
+    access_token: string;
+    user: { id: number; email: string; role: string };
+  }> {
     const user = await this.userService.findByEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const isMatch: boolean = await bcrypt.compare(data.password, user.password);
-
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -58,6 +59,13 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
 
-    return { access_token: token };
+    return {
+      access_token: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    };
   }
 }

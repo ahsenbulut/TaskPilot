@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from './user.entity';
+import { JwtPayloadWithUser } from '../auth/types/jwt-payload-with-user';
 
 @Injectable()
 export class UserService {
@@ -19,18 +24,29 @@ export class UserService {
     return this.repo.save(user);
   }
 
-  // 👇 Yeni metod eklendi
-  async updateRole(userId: number, newRole: UserRole): Promise<User> {
-    const user = await this.repo.findOne({ where: { id: userId } });
+  async countUsers(): Promise<number> {
+    return this.repo.count();
+  }
 
-    if (!user) {
+  async updateRole(
+    targetUserId: number,
+    newRole: UserRole,
+    currentUser: JwtPayloadWithUser,
+  ): Promise<User> {
+    if (targetUserId === currentUser.id) {
+      throw new ForbiddenException('You cannot change your own role.');
+    }
+
+    const targetUser = await this.repo.findOne({ where: { id: targetUserId } });
+    if (!targetUser) {
       throw new NotFoundException('User not found');
     }
 
-    user.role = newRole;
-    return this.repo.save(user);
-  }
-  async countUsers(): Promise<number> {
-    return this.repo.count();
+    if (targetUser.role === UserRole.ADMIN && newRole !== UserRole.ADMIN) {
+      throw new ForbiddenException('You cannot change another admin’s role.');
+    }
+
+    targetUser.role = newRole;
+    return this.repo.save(targetUser);
   }
 }
