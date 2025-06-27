@@ -1,16 +1,18 @@
 version: '3.8'
 services:
-  db:
+  postgres:
     image: postgres:15
+    container_name: taskpilot_postgres
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
-      POSTGRES_USER: taskpilot
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ahsen
+      POSTGRES_PASSWORD: secret
       POSTGRES_DB: taskpilot_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  pgdata:
+
