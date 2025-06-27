@@ -31,6 +31,7 @@ export class CreateTaskDto {
   end_date?: string;
 
   @IsOptional()
-  @IsIn(['low', 'normal', 'high'])
-  priority?: 'low' | 'normal' | 'high';
+  @IsIn([1, 2, 3])
+  priority?: number;
+
 }

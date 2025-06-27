@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
+import { AssignTaskDto } from './dto/assign-task.dto';
 
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  // CREATE
   @Post()
-  create(@Body() dto: CreateTaskDto) {
-    return this.taskService.create(dto);
+  create(@Body() createTaskDto: CreateTaskDto) {
+    return this.taskService.create(createTaskDto);
   }
 
+  // GET all tasks by projectId
   @Get()
-  findAll() {
-    return this.taskService.findAll();
+  findAll(@Query('projectId') projectId: number) {
+    return this.taskService.findAllByProject(projectId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+  // PATCH status update
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: number, @Body() dto: UpdateStatusDto) {
+    return this.taskService.updateStatus(+id, dto);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateTaskDto) {
-    return this.taskService.update(+id, dto);
+  // PATCH assign user
+  @Patch(':id/assign')
+  assign(@Param('id') id: number, @Body() dto: AssignTaskDto) {
+    return this.taskService.assignTask(+id, dto);
   }
 
+  // DELETE task
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.taskService.remove(+id);
   }
 }

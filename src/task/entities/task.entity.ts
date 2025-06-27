@@ -3,12 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
 
-@Entity('tasks')
+@Entity()
 export class Task {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,23 +17,36 @@ export class Task {
   @Column()
   title: string;
 
-  @Column()
-  status: string;
+  @Column({ default: 'todo' })
+  status: 'todo' | 'in-progress' | 'done';
 
-  @ManyToOne(() => Project, (project) => project.tasks)
-  @JoinColumn({ name: 'project_id' })
+  @Column()
+  projectId: number;
+
+  @ManyToOne(() => Project, (project) => project.tasks, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn({ name: 'projectId' })
   project: Project;
 
-  @ManyToOne(() => User, user => user.tasks, { eager: true })
-  @JoinColumn({ name: 'assigned_user_id' })
+  @Column({ nullable: true })
+  assignedUserId: number;
+
+  @ManyToOne(() => User, (user) => user.tasks, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    eager: true,
+  })
+  @JoinColumn({ name: 'assignedUserId' })
   assignedUser: User;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'date', nullable: true })
   startDate: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'date', nullable: true })
   endDate: Date;
 
-  @Column({ nullable: true })
-  priority: string;
+  @Column({ type: 'int', default: 1 })
+  priority: number;
 }
