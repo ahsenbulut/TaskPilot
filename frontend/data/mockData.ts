@@ -4,7 +4,7 @@ export interface User {
     name: string;
     email: string;
     password: string;
-    role: 'admin' | 'user' | 'manager';
+    role: 'admin' | 'guest' | 'manager';
     created_at: string;
   }
   
@@ -37,12 +37,18 @@ export interface User {
     content: string;
     created_at: string;
   }
+
+  // JWT Tipi
+  export interface JWT {  
+    token: string;
+    user: User;
+  }
   
   // Mock Users
   export const users: User[] = [
-    { id: 1, name: 'Ali Yılmaz', email: 'ali@example.com', password: 'hashedpw1', role: 'admin', created_at: '2024-06-01T10:00:00Z' },
-    { id: 2, name: 'Ayşe Demir', email: 'ayse@example.com', password: 'hashedpw2', role: 'user', created_at: '2024-06-02T11:30:00Z' },
-    { id: 3, name: 'Mehmet Kaya', email: 'mehmet@example.com', password: 'hashedpw3', role: 'manager', created_at: '2024-06-03T09:45:00Z' },
+    { id: 1, name: 'Ali Yılmaz', email: 'ali@example.com', password: '12345678', role: 'admin', created_at: '2024-06-01T10:00:00Z' },
+    { id: 2, name: 'Ayşe Demir', email: 'ayse@example.com', password: '12345678', role: 'guest', created_at: '2024-06-02T11:30:00Z' },
+    { id: 3, name: 'Mehmet Kaya', email: 'mehmet@example.com', password: '12345678', role: 'manager', created_at: '2024-06-03T09:45:00Z' },
   ];
   
   // Mock Projects
@@ -64,4 +70,10 @@ export interface User {
     { id: 2, task_id: 2, user_id: 1, content: 'API endpointleri hazır.', created_at: '2024-06-08T14:30:00Z' },
     { id: 3, task_id: 3, user_id: 2, content: 'Yazı eklendi ve yayınlandı.', created_at: '2024-06-09T16:10:00Z' },
   ];
+
+  // Mock JWT
+  export const jwt: JWT = {
+    token: '1234567890',
+    user: users[0],
+  }
   

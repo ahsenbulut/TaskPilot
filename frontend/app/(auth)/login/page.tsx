@@ -3,6 +3,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useDispatch, useSelector } from 'react-redux'
+import { login } from '@/redux/features/login/loginSlice'
+import { jwt, users } from '@/data/mockData'
 import {
   BackgroundContainer,
   LoginCard,
@@ -41,23 +44,34 @@ const theme = createTheme({
 export default function Login() {
   
   const router = useRouter()
+  const dispatch = useDispatch()
 
-  const [name, setName] = useState('')
-  const [surname, setSurname] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [number, setNumber] = useState('')
+  const [password, setPassword] = useState('')	
   const [error] = useState('')
 
 
-  const handleRegister = () => {
-    console.log(name, surname, email, password, number)
-    //api cevabı beklenecek
+  const handleLogin = () => {
+    console.log(email, password)
+    try{
+      const user = users.find(user => user.email === email && user.password === password)
+      if(user){
+        dispatch(login(user.name))
+        console.log(user.name)
+        //router.push('/dashboard')
+      }
+      else{
+        alert("Hatalı e-posta veya şifre")
+      }
+    }
+    catch(error){
+      alert("Hatalı e-posta veya şifre, " + error)
+    }
   }
 
-  const handleSignin = () => {
-    console.log("signin")
-    router.push('/login')
+  const handleSignup = () => {
+    console.log("signup")
+    router.push('/register')
   }
 
   return (
@@ -96,32 +110,11 @@ export default function Login() {
           {/* Form alanları */}
           <FormContainer>
             <StyledTextField 
-              label="İsim" 
-              variant="outlined"
-              fullWidth
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-             <StyledTextField 
-              label="Soyisim" 
-              variant="outlined"
-              fullWidth
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-            />
-            <StyledTextField 
               label="E-posta" 
               variant="outlined"
               fullWidth
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            />
-            <StyledTextField 
-              label="Telefon Numarası" 
-              variant="outlined"
-              fullWidth
-              value={number}
-              onChange={(e) => setNumber(e.target.value)}
             />
             <StyledTextField 
               label="Şifre" 
@@ -133,14 +126,14 @@ export default function Login() {
             />
           </FormContainer>
 
-          {/* Kayıt ol butonu */}
+          {/* Giriş butonu */}
           <LoginButton 
             variant="contained" 
             fullWidth
             size="large"
-            onClick={handleRegister}
+            onClick={handleLogin}
           >
-            Kayıt Ol
+            Giriş Yap
           </LoginButton>
 
           {/* Ayırıcı */}
@@ -154,17 +147,17 @@ export default function Login() {
             fullWidth
             size="large"
           >
-            🚀 Google ile Kayıt Ol
+            🚀 Google ile Giriş Yap
           </GoogleButton>
 
           {/* Üye ol linki */}
           <FooterText variant="body2">
-            Hesabınız var mı?{' '}
+            Hesabınız yok mu?{' '}
             <SignupButton 
               variant="text"
-              onClick={handleSignin}
+              onClick={handleSignup}
             >
-              Giriş Yap
+              Üye Ol
             </SignupButton>
           </FooterText>
         </LoginCard>

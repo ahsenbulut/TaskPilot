@@ -42,19 +42,33 @@ export default function Login() {
   
   const router = useRouter()
 
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')	
+  const [password, setPassword] = useState('')
+  const [password2, setPassword2] = useState('')
   const [error] = useState('')
 
 
-  const handleLogin = () => {
-    console.log(email, password)
-    //router.push('/dashboard')
+  const handleRegister = () => {
+    console.log(name, email, password, password2)
+    //api cevabı beklenecek
+    if(password !== password2){
+      alert("Şifreler eşleşmiyor")
+    }
+    else if(password.length < 8 )
+      alert("Şifre en az 8 karakter olmalıdır")
+    else if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){
+      alert("E-posta geçersiz")
+    }
+    else{
+      alert("Kayıt başarılı")
+    }
+    //api yanıtı sonrası router.push('/login')
   }
 
-  const handleSignup = () => {
-    console.log("signup")
-    router.push('/register')
+  const handleSignin = () => {
+    console.log("signin")
+    router.push('/login')
   }
 
   return (
@@ -93,6 +107,13 @@ export default function Login() {
           {/* Form alanları */}
           <FormContainer>
             <StyledTextField 
+              label="İsim" 
+              variant="outlined"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <StyledTextField 
               label="E-posta" 
               variant="outlined"
               fullWidth
@@ -107,16 +128,24 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <StyledTextField 
+              label="Şifre Tekrar" 
+              type="password"
+              variant="outlined"
+              fullWidth
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+            />
           </FormContainer>
 
-          {/* Giriş butonu */}
+          {/* Kayıt ol butonu */}
           <LoginButton 
             variant="contained" 
             fullWidth
             size="large"
-            onClick={handleLogin}
+            onClick={handleRegister}
           >
-            Giriş Yap
+            Kayıt Ol
           </LoginButton>
 
           {/* Ayırıcı */}
@@ -130,17 +159,17 @@ export default function Login() {
             fullWidth
             size="large"
           >
-            🚀 Google ile Giriş Yap
+            🚀 Google ile Kayıt Ol
           </GoogleButton>
 
           {/* Üye ol linki */}
           <FooterText variant="body2">
-            Hesabınız yok mu?{' '}
+            Hesabınız var mı?{' '}
             <SignupButton 
               variant="text"
-              onClick={handleSignup}
+              onClick={handleSignin}
             >
-              Üye Ol
+              Giriş Yap
             </SignupButton>
           </FooterText>
         </LoginCard>
