@@ -1,3 +1,4 @@
+import 'reflect-metadata'; // NestJS + TypeORM için genelde önerilir
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -6,19 +7,30 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  // Global ValidationPipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-  // Swagger config başlıyor
+  // Swagger config
   const config = new DocumentBuilder()
     .setTitle('TaskPilot API')
-    .setDescription('Kullanici girişi kayıt ve rol yönetimi API dokümantasyonu')
+    .setDescription('Kullanıcı, proje ve görev yönetimi API dokümantasyonu')
     .setVersion('1.0')
-    .addBearerAuth() // JWT token'ı eklemek için
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // /api adresinde Swagger arayüzü
+  SwaggerModule.setup('api', app, document); // http://localhost:3000/api
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  console.log(`🚀 App is running on http://localhost:${port}`);
+  console.log(`📄 Swagger UI: http://localhost:${port}/api`);
 }
+
 bootstrap();
