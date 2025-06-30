@@ -7,12 +7,12 @@ export class LoginDto {
     description: 'Kullanıcının kayıtlı e-posta adresi',
   })
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: 'strongPassword123',
     description: 'Kullanıcının şifresi',
   })
   @IsString()
-  password: string;
+  password!: string;
 }

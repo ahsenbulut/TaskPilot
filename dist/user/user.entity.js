@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = exports.UserRole = void 0;
 const typeorm_1 = require("typeorm");
 const class_transformer_1 = require("class-transformer");
+const task_entity_1 = require(".././task/entities/task.entity");
 var UserRole;
 (function (UserRole) {
     UserRole["ADMIN"] = "admin";
@@ -25,6 +26,7 @@ let User = class User {
     password;
     role;
     createdAt;
+    tasks;
 };
 exports.User = User;
 __decorate([
@@ -56,6 +58,10 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], User.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => task_entity_1.Task, (task) => task.assignedUser),
+    __metadata("design:type", Array)
+], User.prototype, "tasks", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)('users')
 ], User);

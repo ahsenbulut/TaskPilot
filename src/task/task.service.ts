@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Task } from './entities/task.entity';
-import { User } from '../user/entities/user.entity'; // user dosyanı bu şekilde oluşturacaksın
+import { User } from '../user/user.entity'; // user dosyanı bu şekilde oluşturacaksın
 
 import { AssignTaskDto } from './dto/assign-task.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 
 import { CreateTaskDto } from './dto/create-task.dto';
 
-
+// ...
 
 @Injectable()
 export class TaskService {
@@ -19,10 +19,13 @@ export class TaskService {
     private taskRepository: Repository<Task>,
 
     @InjectRepository(User)
-    private userRepository: Repository<User>, // bu önemli!
+    private userRepository: Repository<User>,
   ) {}
 
-  async assignTask(id: number, { assignedUserId }: AssignTaskDto) {
+  async assignTask(
+    id: number,
+    { assignedUserId }: AssignTaskDto,
+  ): Promise<Task> {
     const task = await this.taskRepository.findOneBy({ id });
     if (!task) throw new NotFoundException('Task not found');
 
@@ -33,7 +36,7 @@ export class TaskService {
     return this.taskRepository.save(task);
   }
 
-  async updateStatus(id: number, { status }: UpdateStatusDto) {
+  async updateStatus(id: number, { status }: UpdateStatusDto): Promise<Task> {
     const task = await this.taskRepository.findOneBy({ id });
     if (!task) throw new NotFoundException('Task not found');
 
@@ -42,25 +45,20 @@ export class TaskService {
   }
 
   async create(createTaskDto: CreateTaskDto): Promise<Task> {
-  const task = this.taskRepository.create(createTaskDto);
-  return this.taskRepository.save(task);
-}
+    const task = this.taskRepository.create(createTaskDto);
+    return this.taskRepository.save(task);
+  }
 
-async findAllByProject(projectId: number) {
-  return this.taskRepository.find({
-    where: { projectId },
-    relations: ['project', 'assignedUser'],
-  });
-}
+  async findAllByProject(projectId: number): Promise<Task[]> {
+    return this.taskRepository.find({
+      where: { projectId },
+      relations: ['project', 'assignedUser'],
+    });
+  }
 
-async remove(id: number) {
-  const task = await this.taskRepository.findOneBy({ id });
-  if (!task) throw new NotFoundException('Task not found');
-  return this.taskRepository.remove(task);
-}
-
-
-
-
-
+  async remove(id: number): Promise<Task> {
+    const task = await this.taskRepository.findOneBy({ id });
+    if (!task) throw new NotFoundException('Task not found');
+    return this.taskRepository.remove(task);
+  }
 }

@@ -1,3 +1,4 @@
+import { Task } from '.././task/entities/task.entity';
 export declare enum UserRole {
     ADMIN = "admin",
     MANAGER = "manager",
@@ -10,4 +11,5 @@ export declare class User {
     password: string;
     role: UserRole;
     createdAt: Date;
+    tasks: Task[];
 }

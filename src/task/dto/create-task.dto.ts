@@ -1,9 +1,4 @@
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsIn,
-  IsDateString,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsIn, IsDateString } from 'class-validator';
 
 export class CreateTaskDto {
   @IsNotEmpty()
@@ -33,5 +28,4 @@ export class CreateTaskDto {
   @IsOptional()
   @IsIn([1, 2, 3])
   priority?: number;
-
 }

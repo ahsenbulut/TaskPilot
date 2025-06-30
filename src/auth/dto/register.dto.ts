@@ -7,14 +7,14 @@ export class RegisterDto {
     description: 'Kullanıcının e-posta adresi',
   })
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: 'Ali Veli',
     description: 'Kullanıcının adı ve soyadı',
   })
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: 'strongPassword123',
@@ -22,5 +22,5 @@ export class RegisterDto {
   })
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 }

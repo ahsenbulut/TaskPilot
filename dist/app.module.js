@@ -12,7 +12,8 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_module_1 = require("./user/user.module");
 const auth_module_1 = require("./auth/auth.module");
-const user_entity_1 = require("./user/user.entity");
+const project_module_1 = require("./project/project.module");
+const task_module_1 = require("./task/task.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -24,16 +25,18 @@ exports.AppModule = AppModule = __decorate([
             }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
-                host: process.env.DATABASE_HOST,
+                host: process.env.DATABASE_HOST || 'localhost',
                 port: parseInt(process.env.DATABASE_PORT || '5432'),
-                username: process.env.DATABASE_USER,
-                password: process.env.DATABASE_PASSWORD,
-                database: process.env.DATABASE_NAME,
-                entities: [user_entity_1.User],
+                username: process.env.DATABASE_USER || 'postgres',
+                password: process.env.DATABASE_PASSWORD || 'password',
+                database: process.env.DATABASE_NAME || 'taskpilot_db',
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
                 synchronize: true,
             }),
-            user_module_1.UserModule,
             auth_module_1.AuthModule,
+            user_module_1.UserModule,
+            project_module_1.ProjectModule,
+            task_module_1.TaskModule,
         ],
     })
 ], AppModule);

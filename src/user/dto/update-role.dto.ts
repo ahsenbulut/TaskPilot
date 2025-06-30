@@ -9,5 +9,5 @@ export class UpdateUserRoleDto {
     enum: UserRole,
   })
   @IsEnum(UserRole)
-  role: UserRole;
+  role!: UserRole;
 }
