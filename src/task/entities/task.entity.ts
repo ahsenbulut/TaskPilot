@@ -3,35 +3,34 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../user/user.entity';
 import { Project } from '../../project/entities/project.entity';
 
 @Entity()
 export class Task {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  title: string;
+  title!: string;
 
   @Column({ default: 'todo' })
-  status: 'todo' | 'in-progress' | 'done';
+  status!: 'todo' | 'in-progress' | 'done';
 
   @Column()
-  projectId: number;
+  projectId!: number;
 
   @ManyToOne(() => Project, (project) => project.tasks, {
     onDelete: 'CASCADE',
     eager: true,
   })
   @JoinColumn({ name: 'projectId' })
-  project: Project;
+  project!: Project;
 
   @Column({ nullable: true })
-  assignedUserId: number;
+  assignedUserId!: number;
 
   @ManyToOne(() => User, (user) => user.tasks, {
     nullable: true,
@@ -39,14 +38,14 @@ export class Task {
     eager: true,
   })
   @JoinColumn({ name: 'assignedUserId' })
-  assignedUser: User;
+  assignedUser!: User;
 
   @Column({ type: 'date', nullable: true })
-  startDate: Date;
+  startDate!: Date;
 
   @Column({ type: 'date', nullable: true })
-  endDate: Date;
+  endDate!: Date;
 
   @Column({ type: 'int', default: 1 })
-  priority: number;
+  priority!: number;
 }

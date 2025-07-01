@@ -1,23 +1,13 @@
+import 'reflect-metadata'; // NestJS + TypeORM için genelde önerilir
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import 'reflect-metadata';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Swagger konfigürasyonu
-  const config = new DocumentBuilder()
-    .setTitle('TaskPilot API')
-    .setDescription('Proje ve görev yönetim servisi')
-    .setVersion('1.0')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // http://localhost:3000/api
-
-  // ✅ Global ValidationPipe
+  // Global ValidationPipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -26,9 +16,21 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
-  console.log('🚀 App is running on http://localhost:3000');
-  console.log('📄 Swagger UI: http://localhost:3000/api');
+  // Swagger config
+  const config = new DocumentBuilder()
+    .setTitle('TaskPilot API')
+    .setDescription('Kullanıcı, proje ve görev yönetimi API dokümantasyonu')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document); // http://localhost:3000/api
+
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  console.log(`🚀 App is running on http://localhost:${port}`);
+  console.log(`📄 Swagger UI: http://localhost:${port}/api`);
 }
 
 bootstrap();

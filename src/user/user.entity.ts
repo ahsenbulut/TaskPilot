@@ -6,38 +6,40 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { Task } from '../../task/entities/task.entity';
+import { Task } from '.././task/entities/task.entity'; // ✅ dizine göre ayarla
 
 export enum UserRole {
   ADMIN = 'admin',
-  MEMBER = 'member',
+  MANAGER = 'manager',
+  GUEST = 'guest',
 }
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
   @Exclude()
-  password: string;
+  password!: string;
 
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.MEMBER,
+    default: UserRole.GUEST,
   })
-  role: UserRole;
+  role!: UserRole;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
+  // ✅ İLİŞKİ: Bu kullanıcıya atanmış görevler
   @OneToMany(() => Task, (task) => task.assignedUser)
-  tasks: Task[];
+  tasks!: Task[];
 }
